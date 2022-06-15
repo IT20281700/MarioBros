@@ -1,6 +1,5 @@
-package com.chamodex.mariobros.Sprites;
+package com.chamodex.mariobros.Sprites.Enemies;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

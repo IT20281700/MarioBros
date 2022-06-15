@@ -1,13 +1,12 @@
-package com.chamodex.mariobros.Sprites;
+package com.chamodex.mariobros.Sprites.Items;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.physics.box2d.World;
 import com.chamodex.mariobros.MarioBros;
 import com.chamodex.mariobros.Scenes.Hud;
 import com.chamodex.mariobros.Screens.PlayScreen;
+import com.chamodex.mariobros.Sprites.TileObjects.InteractiveTileObject;
 
 public class Brick extends InteractiveTileObject {
     public Brick(PlayScreen screen, Rectangle bounds) {
