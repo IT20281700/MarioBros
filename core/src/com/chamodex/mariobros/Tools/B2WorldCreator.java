@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.chamodex.mariobros.MarioBros;
+import com.chamodex.mariobros.Screens.PlayScreen;
 import com.chamodex.mariobros.Sprites.Brick;
 import com.chamodex.mariobros.Sprites.Coin;
 
@@ -22,9 +23,13 @@ public class B2WorldCreator {
     private FixtureDef fdef;
     private Body body;
 
-    public B2WorldCreator(World world, TiledMap map) {
-        this.world = world;
-        this.map = map;
+    private PlayScreen screen;
+
+    public B2WorldCreator(PlayScreen screen) {
+        this.screen = screen;
+
+        world = screen.getWorld();
+        map = screen.getMap();
 
         // Create body and fixture variables
         bdef = new BodyDef();
@@ -52,11 +57,11 @@ public class B2WorldCreator {
 
             // Create coin bodies/fixtures
             if(type.equals("coin")) {
-                new Coin(world, map, rect);
+                new Coin(screen, rect);
             }
             // Create brick bodies/fixtures
             if(type.equals("brick")) {
-                new Brick(world, map, rect);
+                new Brick(screen, rect);
             }
             // Create pipe bodies/fixtures
             if(type.equals("pipe")) {
@@ -71,6 +76,7 @@ public class B2WorldCreator {
 
                 shape.setAsBox(rect.getWidth() / 2 / MarioBros.PPM, rect.getHeight() / 2 / MarioBros.PPM);
                 fdef.shape = shape;
+                fdef.filter.categoryBits = MarioBros.OBJECT_BIT;
                 body.createFixture(fdef);
             }
             // Create ground bodies/fixtures

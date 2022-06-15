@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.chamodex.mariobros.MarioBros;
 import com.chamodex.mariobros.Scenes.Hud;
+import com.chamodex.mariobros.Sprites.Goomba;
 import com.chamodex.mariobros.Sprites.Mario;
 import com.chamodex.mariobros.Tools.B2WorldCreator;
 import com.chamodex.mariobros.Tools.WorldContactListener;
@@ -41,8 +42,9 @@ public class PlayScreen implements Screen {
     private World world;
     private Box2DDebugRenderer b2dr;
 
-    // player
+    // Sprites
     private Mario player;
+    private Goomba goomba;
 
     private Music music;
 
@@ -73,10 +75,11 @@ public class PlayScreen implements Screen {
         b2dr = new Box2DDebugRenderer();
 
         // Create world objects (bricks, coins, etc...)
-        new B2WorldCreator(world, map);
+        new B2WorldCreator(this);
 
-        // Create Mario
-        player = new Mario(world, this);
+        // Sprites
+        player = new Mario(this);
+        goomba = new Goomba(this, .32f, .32f);
 
         // player contact world objects
         world.setContactListener(new WorldContactListener());
@@ -116,6 +119,7 @@ public class PlayScreen implements Screen {
 
         // Player update
         player.update(dt);
+        goomba.update(dt);
         hud.update(dt);
 
         // attach game cam to player.x coordinate
@@ -146,6 +150,7 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
         player.draw(game.batch);
+        goomba.draw(game.batch);
         game.batch.end();
 
         // Set our batch to new draw what the Hud camera sees
@@ -156,6 +161,14 @@ public class PlayScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         gamePort.update(width, height);
+    }
+
+    public TiledMap getMap() {
+        return map;
+    }
+
+    public World getWorld() {
+        return world;
     }
 
     @Override
