@@ -21,8 +21,10 @@ public abstract class InteractiveTileObject {
     protected TiledMapTile tile;
     protected Rectangle bounds;
     protected Body body;
+    protected PlayScreen screen;
 
     public InteractiveTileObject(PlayScreen screen, Rectangle bounds) {
+        this.screen = screen;
         world = screen.getWorld();
         map = screen.getMap();
         this.bounds = bounds;

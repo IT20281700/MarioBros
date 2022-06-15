@@ -1,4 +1,4 @@
-package com.chamodex.mariobros.Sprites.Items;
+package com.chamodex.mariobros.Sprites.TileObjects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;

@@ -13,14 +13,20 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.chamodex.mariobros.MarioBros;
 import com.chamodex.mariobros.Scenes.Hud;
 import com.chamodex.mariobros.Sprites.Enemies.Enemy;
+import com.chamodex.mariobros.Sprites.Items.Item;
+import com.chamodex.mariobros.Sprites.Items.ItemDef;
+import com.chamodex.mariobros.Sprites.Items.Mushroom;
 import com.chamodex.mariobros.Sprites.Mario;
 import com.chamodex.mariobros.Tools.B2WorldCreator;
 import com.chamodex.mariobros.Tools.WorldContactListener;
+
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class PlayScreen implements Screen {
 
@@ -47,6 +53,9 @@ public class PlayScreen implements Screen {
     private Mario player;
 
     private Music music;
+
+    private Array<Item> items;
+    private LinkedBlockingQueue<ItemDef> itemsToSpawn;
 
     public PlayScreen(MarioBros game) {
         atlas = new TextureAtlas("Mario_and_Enemies.pack");
@@ -89,8 +98,22 @@ public class PlayScreen implements Screen {
 //        music.setLooping(true);
 //        music.play();
 
-        // create goomba to the game
+        items = new Array<Item>();
+        itemsToSpawn = new LinkedBlockingQueue<ItemDef>();
 
+    }
+
+    public void spawnItem(ItemDef idef) {
+        itemsToSpawn.add(idef);
+    }
+
+    public void handleSpawningItems() {
+        if(!itemsToSpawn.isEmpty()) {
+            ItemDef idef = itemsToSpawn.poll();
+            if(idef.type == Mushroom.class) {
+                items.add(new Mushroom(this, idef.position.x, idef.position.y));
+            }
+        }
     }
 
     public TextureAtlas getAtlas() {
@@ -116,6 +139,9 @@ public class PlayScreen implements Screen {
     public void update(float dt) {
         handleInput(dt);
 
+        handleSpawningItems();
+
+
         // takes 1 step in the physics simulation (60 times per sec)
         world.step(1/60f, 6,2);
 
@@ -127,6 +153,9 @@ public class PlayScreen implements Screen {
                 enemy.b2Body.setActive(true);
             }
         }
+
+        for (Item item : items)
+            item.update(dt);
 
         hud.update(dt);
 
@@ -162,6 +191,9 @@ public class PlayScreen implements Screen {
         player.draw(game.batch);
         for (Enemy enemy : creator.getGoombas())
             enemy.draw(game.batch);
+
+        for (Item item : items)
+            item.draw(game.batch);
 
         game.batch.end();
 

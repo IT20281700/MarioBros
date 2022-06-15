@@ -12,8 +12,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.chamodex.mariobros.MarioBros;
 import com.chamodex.mariobros.Screens.PlayScreen;
-import com.chamodex.mariobros.Sprites.Items.Brick;
-import com.chamodex.mariobros.Sprites.Items.Coin;
+import com.chamodex.mariobros.Sprites.TileObjects.Brick;
+import com.chamodex.mariobros.Sprites.TileObjects.Coin;
 import com.chamodex.mariobros.Sprites.Enemies.Goomba;
 
 public class B2WorldCreator {
