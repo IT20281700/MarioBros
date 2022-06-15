@@ -79,7 +79,7 @@ public class PlayScreen implements Screen {
 
         // Sprites
         player = new Mario(this);
-        goomba = new Goomba(this, .32f, .32f);
+        goomba = new Goomba(this, .64f, .32f);
 
         // player contact world objects
         world.setContactListener(new WorldContactListener());
@@ -149,8 +149,11 @@ public class PlayScreen implements Screen {
         // player render
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
+
+        // Draw sprites
         player.draw(game.batch);
         goomba.draw(game.batch);
+
         game.batch.end();
 
         // Set our batch to new draw what the Hud camera sees
