@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.chamodex.mariobros.MarioBros;
 import com.chamodex.mariobros.Scenes.Hud;
+import com.chamodex.mariobros.Sprites.Enemy;
 import com.chamodex.mariobros.Sprites.Goomba;
 import com.chamodex.mariobros.Sprites.Mario;
 import com.chamodex.mariobros.Tools.B2WorldCreator;
@@ -41,10 +42,10 @@ public class PlayScreen implements Screen {
     // Box2d variables
     private World world;
     private Box2DDebugRenderer b2dr;
+    private B2WorldCreator creator;
 
     // Sprites
     private Mario player;
-    private Goomba goomba;
 
     private Music music;
 
@@ -75,7 +76,7 @@ public class PlayScreen implements Screen {
         b2dr = new Box2DDebugRenderer();
 
         // Create world objects (bricks, coins, etc...)
-        new B2WorldCreator(this);
+        creator = new B2WorldCreator(this);
 
         // create mario in to the game
         player = new Mario(this);
@@ -90,7 +91,6 @@ public class PlayScreen implements Screen {
 //        music.play();
 
         // create goomba to the game
-        goomba = new Goomba(this, 5.64f, .16f);
 
     }
 
@@ -122,7 +122,9 @@ public class PlayScreen implements Screen {
 
         // Player update
         player.update(dt);
-        goomba.update(dt);
+        for (Enemy enemy : creator.getGoombas())
+            enemy.update(dt);
+
         hud.update(dt);
 
         // attach game cam to player.x coordinate
@@ -155,7 +157,8 @@ public class PlayScreen implements Screen {
 
         // Draw sprites
         player.draw(game.batch);
-        goomba.draw(game.batch);
+        for (Enemy enemy : creator.getGoombas())
+            enemy.draw(game.batch);
 
         game.batch.end();
 
