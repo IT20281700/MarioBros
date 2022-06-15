@@ -77,17 +77,20 @@ public class PlayScreen implements Screen {
         // Create world objects (bricks, coins, etc...)
         new B2WorldCreator(this);
 
-        // Sprites
+        // create mario in to the game
         player = new Mario(this);
-        goomba = new Goomba(this, .64f, .32f);
+
 
         // player contact world objects
         world.setContactListener(new WorldContactListener());
 
         // Main Music Play
         music = MarioBros.manager.get(MarioBros.mainMusicPath, Music.class);
-        music.setLooping(true);
-        music.play();
+//        music.setLooping(true);
+//        music.play();
+
+        // create goomba to the game
+        goomba = new Goomba(this, 5.64f, .16f);
 
     }
 

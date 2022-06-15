@@ -2,6 +2,7 @@ package com.chamodex.mariobros.Sprites;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -39,8 +40,10 @@ public class Goomba extends Enemy {
             world.destroyBody(b2Body);
             destroyed = true;
             setRegion(new TextureRegion(screen.getAtlas().findRegion("goomba"), 32, 0, 16, 16));
+            stateTime = 0;
         }
         else if(!destroyed) {
+            b2Body.setLinearVelocity(velocity);
             setPosition(b2Body.getPosition().x - getWidth() / 2, b2Body.getPosition().y - getHeight() / 2);
             setRegion((TextureRegion) walkAnimation.getKeyFrame(stateTime, true));
         }
@@ -55,7 +58,7 @@ public class Goomba extends Enemy {
 
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(5 / MarioBros.PPM);
+        shape.setRadius(6 / MarioBros.PPM);
         fdef.filter.categoryBits = MarioBros.ENEMY_BIT;
         fdef.filter.maskBits = MarioBros.GROUND_BIT |
                 MarioBros.COIN_BIT |
@@ -65,7 +68,7 @@ public class Goomba extends Enemy {
                 MarioBros.MARIO_BIT;
 
         fdef.shape = shape;
-        b2Body.createFixture(fdef);
+        b2Body.createFixture(fdef).setUserData(this);
 
         // Create the Head here:
         PolygonShape head = new PolygonShape();
@@ -81,6 +84,11 @@ public class Goomba extends Enemy {
         fdef.filter.categoryBits = MarioBros.ENEMY_HEAD_BIT;
         b2Body.createFixture(fdef).setUserData(this);
 
+    }
+
+    public void draw(Batch batch) {
+        if(!destroyed || stateTime < 1)
+            super.draw(batch);
     }
 
     @Override
