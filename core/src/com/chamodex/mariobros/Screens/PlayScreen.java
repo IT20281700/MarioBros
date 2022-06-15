@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -20,7 +21,11 @@ import com.chamodex.mariobros.Tools.B2WorldCreator;
 
 public class PlayScreen implements Screen {
 
+    // Reference to Game, used to set Screens
     private final MarioBros game;
+    private TextureAtlas atlas;
+
+    // Basic playscreen variables
     private OrthographicCamera gamecam;
     private Viewport gamePort;
     private Hud hud;
@@ -38,6 +43,8 @@ public class PlayScreen implements Screen {
     private Mario player;
 
     public PlayScreen(MarioBros game) {
+        atlas = new TextureAtlas("Mario_and_Enemies.pack");
+
         this.game = game;
         // Create cam used to follow mario through cam world
         gamecam = new OrthographicCamera();
@@ -65,8 +72,12 @@ public class PlayScreen implements Screen {
         new B2WorldCreator(world, map);
 
         // Create Mario
-        player = new Mario(world);
+        player = new Mario(world, this);
 
+    }
+
+    public TextureAtlas getAtlas() {
+        return atlas;
     }
 
     @Override
@@ -88,11 +99,19 @@ public class PlayScreen implements Screen {
     public void update(float dt) {
         handleInput(dt);
 
+        // takes 1 step in the physics simulation (60 times per sec)
         world.step(1/60f, 6,2);
 
+        // Player update
+        player.update(dt);
+
+        // attach game cam to player.x coordinate
         gamecam.position.x = player.b2Body.getPosition().x;
 
+        // Update game cam to correct coordinate
         gamecam.update();
+
+        // render the view
         renderer.setView(gamecam);
     }
 
@@ -109,6 +128,12 @@ public class PlayScreen implements Screen {
 
         // Render our Box2DDebugLines
         b2dr.render(world, gamecam.combined);
+
+        // player render
+        game.batch.setProjectionMatrix(gamecam.combined);
+        game.batch.begin();
+        player.draw(game.batch);
+        game.batch.end();
 
         // Set our batch to new draw what the Hud camera sees
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
