@@ -1,6 +1,9 @@
 package com.chamodex.mariobros;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.chamodex.mariobros.Screens.PlayScreen;
 
@@ -17,10 +20,24 @@ public class MarioBros extends Game {
 	public static final short DESTROYED_BIT = 16;
 
 	public SpriteBatch batch;
+
+	public static final String mainMusicPath = "audio/music/mario_music.ogg";
+	public static final String coinSoundPath = "audio/sounds/coin.wav";
+	public static final String bumpSoundPath = "audio/sounds/bump.wav";
+	public static final String breakBlockSoundPath = "audio/sounds/breakblock.wav";
+
+	public static AssetManager manager;
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
+		manager = new AssetManager();
+		manager.load(mainMusicPath, Music.class);
+		manager.load(coinSoundPath, Sound.class);
+		manager.load(bumpSoundPath, Sound.class);
+		manager.load(breakBlockSoundPath, Sound.class);
+		manager.finishLoading();
+
 		setScreen(new PlayScreen(this));
 	}
 
@@ -31,6 +48,8 @@ public class MarioBros extends Game {
 	
 	@Override
 	public void dispose () {
+		super.dispose();
+		manager.dispose();
 		batch.dispose();
 	}
 }

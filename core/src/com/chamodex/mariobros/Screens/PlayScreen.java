@@ -3,6 +3,7 @@ package com.chamodex.mariobros.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -43,6 +44,8 @@ public class PlayScreen implements Screen {
     // player
     private Mario player;
 
+    private Music music;
+
     public PlayScreen(MarioBros game) {
         atlas = new TextureAtlas("Mario_and_Enemies.pack");
 
@@ -75,7 +78,13 @@ public class PlayScreen implements Screen {
         // Create Mario
         player = new Mario(world, this);
 
+        // player contact world objects
         world.setContactListener(new WorldContactListener());
+
+        // Main Music Play
+        music = MarioBros.manager.get(MarioBros.mainMusicPath, Music.class);
+        music.setLooping(true);
+        music.play();
 
     }
 

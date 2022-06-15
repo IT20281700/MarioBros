@@ -1,6 +1,7 @@
 package com.chamodex.mariobros.Sprites;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.math.Rectangle;
@@ -21,6 +22,10 @@ public class Coin extends InteractiveTileObject {
 
     @Override
     public void onHeadHit() {
+        if (getCell().getTile().getId() == BLANK_COIN)
+            MarioBros.manager.get(MarioBros.bumpSoundPath, Sound.class).play();
+        else
+            MarioBros.manager.get(MarioBros.coinSoundPath, Sound.class).play();
         getCell().setTile(tileSet.getTile(BLANK_COIN));
         Hud.addScore(100);
     }
