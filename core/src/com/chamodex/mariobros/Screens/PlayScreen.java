@@ -18,6 +18,7 @@ import com.chamodex.mariobros.MarioBros;
 import com.chamodex.mariobros.Scenes.Hud;
 import com.chamodex.mariobros.Sprites.Mario;
 import com.chamodex.mariobros.Tools.B2WorldCreator;
+import com.chamodex.mariobros.Tools.WorldContactListener;
 
 public class PlayScreen implements Screen {
 
@@ -73,6 +74,8 @@ public class PlayScreen implements Screen {
 
         // Create Mario
         player = new Mario(world, this);
+
+        world.setContactListener(new WorldContactListener());
 
     }
 
