@@ -95,7 +95,7 @@ public class PlayScreen implements Screen {
 
         // Main Music Play
         music = MarioBros.manager.get(MarioBros.mainMusicPath, Music.class);
-//        music.setLooping(true);
+        music.setLooping(true);
 //        music.play();
 
         items = new Array<Item>();
