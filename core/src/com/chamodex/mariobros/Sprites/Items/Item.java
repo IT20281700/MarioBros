@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.chamodex.mariobros.MarioBros;
 import com.chamodex.mariobros.Screens.PlayScreen;
+import com.chamodex.mariobros.Sprites.Mario;
 
 public abstract class Item extends Sprite {
     protected PlayScreen screen;
@@ -29,7 +30,7 @@ public abstract class Item extends Sprite {
 
     protected abstract void defineItem();
 
-    public abstract void use();
+    public abstract void use(Mario mario);
 
     public void update(float dt) {
         if (toDestroy && !destroyed) {
@@ -46,4 +47,12 @@ public abstract class Item extends Sprite {
     public void destroy() {
         toDestroy = true;
     }
+
+    public void reverseVelocity(boolean x, boolean y) {
+        if(x)
+            velocity.x = -velocity.x;
+        if(y)
+            velocity.y = -velocity.y;
+    }
+
 }
