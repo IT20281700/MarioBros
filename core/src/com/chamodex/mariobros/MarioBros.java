@@ -30,6 +30,7 @@ public class MarioBros extends Game {
 	public static final String coinSoundPath = "audio/sounds/coin.wav";
 	public static final String bumpSoundPath = "audio/sounds/bump.wav";
 	public static final String breakBlockSoundPath = "audio/sounds/breakblock.wav";
+	public static final String powerupSpawnPath = "audio/sounds/powerup.wav";
 
 	public static AssetManager manager;
 	
@@ -41,6 +42,7 @@ public class MarioBros extends Game {
 		manager.load(coinSoundPath, Sound.class);
 		manager.load(bumpSoundPath, Sound.class);
 		manager.load(breakBlockSoundPath, Sound.class);
+		manager.load(powerupSpawnPath, Sound.class);
 		manager.finishLoading();
 
 		setScreen(new PlayScreen(this));

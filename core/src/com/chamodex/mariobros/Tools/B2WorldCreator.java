@@ -96,14 +96,13 @@ public class B2WorldCreator {
             }
             // Create coin bodies/fixtures
             if(type.equals("coin")) {
-                new Coin(screen, rect);
+                new Coin(screen, object);
             }
             // Create brick bodies/fixtures
             if(type.equals("brick")) {
-                new Brick(screen, rect);
+                new Brick(screen, object);
             }
             // Create goombas
-
             if(type.equals("goomba")) {
                 goombas.add(new Goomba(screen, rect.getX() / MarioBros.PPM, rect.getY() / MarioBros.PPM));
             }
