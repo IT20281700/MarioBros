@@ -12,12 +12,15 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.chamodex.mariobros.MarioBros;
 import com.chamodex.mariobros.Screens.PlayScreen;
+import com.chamodex.mariobros.Sprites.Enemies.Enemy;
+import com.chamodex.mariobros.Sprites.Enemies.Turtle;
 import com.chamodex.mariobros.Sprites.TileObjects.Brick;
 import com.chamodex.mariobros.Sprites.TileObjects.Coin;
 import com.chamodex.mariobros.Sprites.Enemies.Goomba;
 
 public class B2WorldCreator {
     private Array<Goomba> goombas;
+    private Array<Turtle> turtles;
 
     private final World world;
     private final TiledMap map;
@@ -51,9 +54,13 @@ public class B2WorldCreator {
         // Create coin bodies/fixtures
         createObjects(4, "coin");
 
-        // Create goomvas
+        // Create goombas
         goombas = new Array<Goomba>();
         createObjects(6, "goomba");
+
+        // Create turtles
+        turtles = new Array<Turtle>();
+        createObjects(7, "turtle");
 
     }
 
@@ -107,10 +114,22 @@ public class B2WorldCreator {
                 goombas.add(new Goomba(screen, rect.getX() / MarioBros.PPM, rect.getY() / MarioBros.PPM));
             }
 
+            // Create turtles
+            if(type.equals("turtle")) {
+                turtles.add(new Turtle(screen, rect.getX() / MarioBros.PPM, rect.getY() / MarioBros.PPM));
+            }
+
         }
     }
 
     public Array<Goomba> getGoombas() {
         return goombas;
+    }
+
+    public Array<Enemy> getEnemies() {
+        Array<Enemy> enemies = new Array<Enemy>();
+        enemies.addAll(goombas);
+        enemies.addAll(turtles);
+        return enemies;
     }
 }
