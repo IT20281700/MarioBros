@@ -38,6 +38,7 @@ public class Mario extends Sprite {
     private boolean marioIsBig;
     private boolean runGrowAnimation;
     private boolean timeToDefineBigMario;
+    private boolean timeToReDefineMario;
 
     private Screen screen;
 
@@ -93,6 +94,8 @@ public class Mario extends Sprite {
         if(timeToDefineBigMario) {
             defineBigMario();
         }
+        if(timeToReDefineMario)
+            redefineMario();
     }
 
     private TextureRegion getFrame(float dt) {
@@ -161,6 +164,52 @@ public class Mario extends Sprite {
 
     public boolean isBig() {
         return marioIsBig;
+    }
+
+    public void hit() {
+        if(marioIsBig) {
+            marioIsBig = false;
+            timeToReDefineMario = true;
+            setBounds(getX(), getY(), getWidth(), getHeight() / 2);
+            MarioBros.manager.get(MarioBros.powerdownPath, Sound.class).play();
+        }
+        else {
+            MarioBros.manager.get(MarioBros.marioDiePath, Sound.class).play();
+        }
+    }
+
+    private void redefineMario() {
+        Vector2 position = b2Body.getPosition();
+        world.destroyBody(b2Body);
+
+        BodyDef bdef = new BodyDef();
+        bdef.position.set(position);
+        bdef.type = BodyDef.BodyType.DynamicBody;
+        b2Body = world.createBody(bdef);
+
+        FixtureDef fdef = new FixtureDef();
+        CircleShape shape = new CircleShape();
+        shape.setRadius(6 / MarioBros.PPM);
+        fdef.filter.categoryBits = MarioBros.MARIO_BIT;
+        fdef.filter.maskBits = MarioBros.GROUND_BIT |
+                MarioBros.COIN_BIT |
+                MarioBros.BRICK_BIT |
+                MarioBros.ENEMY_BIT |
+                MarioBros.OBJECT_BIT |
+                MarioBros.ENEMY_HEAD_BIT |
+                MarioBros.ITEM_BIT;
+
+        fdef.shape = shape;
+        b2Body.createFixture(fdef).setUserData(this);
+
+        EdgeShape head = new EdgeShape();
+        head.set(new Vector2(-2 / MarioBros.PPM, 6 / MarioBros.PPM), new Vector2(2 / MarioBros.PPM, 6 / MarioBros.PPM));
+        fdef.filter.categoryBits = MarioBros.MARIO_HEAD_BIT;
+        fdef.shape = head;
+        fdef.isSensor = true;
+
+        b2Body.createFixture(fdef).setUserData(this);
+        timeToReDefineMario = false;
     }
 
     private void defineBigMario() {

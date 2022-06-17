@@ -33,6 +33,9 @@ public class MarioBros extends Game {
 	public static final String breakBlockSoundPath = "audio/sounds/breakblock.wav";
 	public static final String powerupSpawnPath = "audio/sounds/spawn.wav";
 	public static final String powerupPath = "audio/sounds/powerup.wav";
+	public static final String powerdownPath = "audio/sounds/powerdown.wav";
+	public static final String stompPath = "audio/sounds/stomp.wav";
+	public static final String marioDiePath = "audio/sounds/mariodie.wav";
 	public static AssetManager manager;
 	
 	@Override
@@ -45,6 +48,9 @@ public class MarioBros extends Game {
 		manager.load(breakBlockSoundPath, Sound.class);
 		manager.load(powerupSpawnPath, Sound.class);
 		manager.load(powerupPath, Sound.class);
+		manager.load(powerdownPath, Sound.class);
+		manager.load(stompPath, Sound.class);
+		manager.load(marioDiePath, Sound.class);
 		manager.finishLoading();
 
 		setScreen(new PlayScreen(this));
