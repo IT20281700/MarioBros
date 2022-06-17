@@ -32,6 +32,7 @@ public class PlayScreen implements Screen {
     // Reference to Game, used to set Screens
     private final MarioBros game;
     private TextureAtlas atlas;
+    public static boolean alreadyDestroyed = false;
 
     // Basic playscreen variables
     private OrthographicCamera gamecam;
@@ -129,19 +130,19 @@ public class PlayScreen implements Screen {
         // If user is holding down mouse move our camera through the game world
         if (player.currentState != Mario.State.DEAD) {
             if (Gdx.input.isKeyJustPressed(Input.Keys.UP) || Gdx.input.isKeyJustPressed(Input.Keys.W))
-                player.b2Body.applyLinearImpulse(new Vector2(0, 4f), player.b2Body.getWorldCenter(), true);
+                player.jump();
             if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D) && player.b2Body.getLinearVelocity().x <= 2)
                 player.b2Body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2Body.getWorldCenter(), true);
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A) && player.b2Body.getLinearVelocity().x >= -2)
                 player.b2Body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2Body.getWorldCenter(), true);
+            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
+                player.fire();
         }
     }
 
     public void update(float dt) {
         handleInput(dt);
-
         handleSpawningItems();
-
 
         // takes 1 step in the physics simulation (60 times per sec)
         world.step(1/60f, 6,2);
@@ -251,5 +252,9 @@ public class PlayScreen implements Screen {
         world.dispose();
         b2dr.dispose();
         hud.dispose();
+    }
+
+    public Hud getHud() {
+        return hud;
     }
 }

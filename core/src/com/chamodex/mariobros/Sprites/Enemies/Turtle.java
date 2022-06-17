@@ -17,16 +17,16 @@ import com.chamodex.mariobros.Sprites.Mario;
 import com.chamodex.mariobros.Tools.B2WorldCreator;
 
 public class Turtle extends Enemy {
-    public static final int KICK_LEFT_SPEED = -2;
-    public static final int KICK_RIGHT_SPEED = 2;
-    public enum State { WALKING, STANDING_SHELL, MOVING_SHELL, DEAD }
+    public static final int KICK_LEFT = -2;
+    public static final int KICK_RIGHT = 2;
+    public enum State { WALKING, STANDING_SHELL, MOVING_SHELL }
     public State currentState;
     public State previouseState;
     private float stateTime;
     private Animation walkAnimation;
     private Array<TextureRegion> frames;
     private TextureRegion shell;
-    private float deadRotationDegrees;
+    private boolean setToDestroy;
     private boolean destroyed;
 
     public Turtle(PlayScreen screen, float x, float y) {
@@ -38,7 +38,6 @@ public class Turtle extends Enemy {
 
         walkAnimation = new Animation(0.2f, frames);
         currentState = previouseState = State.WALKING;
-        deadRotationDegrees = 0;
 
         setBounds(getX(), getY(), 16 / MarioBros.PPM, 24 / MarioBros.PPM);
 
@@ -75,22 +74,14 @@ public class Turtle extends Enemy {
         head.set(vertice);
 
         fdef.shape = head;
-        fdef.restitution = 1.5f;
+        fdef.restitution = 1.8f;
         fdef.filter.categoryBits = MarioBros.ENEMY_HEAD_BIT;
         b2Body.createFixture(fdef).setUserData(this);
     }
 
     @Override
-    public void onEnemyHit(Enemy enemy) {
-        if (enemy instanceof Turtle) {
-            if (((Turtle) enemy).currentState == State.MOVING_SHELL && currentState != State.MOVING_SHELL) {
-                killed();
-            } else if (currentState == State.MOVING_SHELL && ((Turtle) enemy).currentState == State.WALKING)
-                return;
-            else
-                reverseVelocity(true, false);
-        } else if (currentState != State.MOVING_SHELL)
-            reverseVelocity(true, false);
+    public void hitByEnemy(Enemy enemy) {
+        reverseVelocity(true, false);
     }
 
     public TextureRegion getFrame(float dt) {
@@ -130,26 +121,21 @@ public class Turtle extends Enemy {
         }
 
         setPosition(b2Body.getPosition().x - getWidth() / 2, b2Body.getPosition().y - 8 / MarioBros.PPM);
-
-        if (currentState == State.DEAD) {
-            deadRotationDegrees += 3;
-            rotate(deadRotationDegrees);
-            if (stateTime > 5 && !destroyed) {
-                world.destroyBody(b2Body);
-                destroyed = true;
-                B2WorldCreator.removeTurtle(this);
-            }
-        } else
-            b2Body.setLinearVelocity(velocity);
+        b2Body.setLinearVelocity(velocity);
     }
 
     @Override
     public void hitOnHead(Mario mario) {
-        if (currentState != State.STANDING_SHELL) {
+        if(currentState == State.STANDING_SHELL) {
+            if(mario.b2Body.getPosition().x > b2Body.getPosition().x)
+                velocity.x = -2;
+            else
+                velocity.x = 2;
+            currentState = State.MOVING_SHELL;
+        }
+        else {
             currentState = State.STANDING_SHELL;
             velocity.x = 0;
-        } else {
-            kick(mario.getX() <= this.getX() ? KICK_RIGHT_SPEED : KICK_LEFT_SPEED);
         }
     }
 
@@ -158,21 +144,9 @@ public class Turtle extends Enemy {
             super.draw(batch);
     }
 
-    public void kick(int speed) {
-        velocity.x = speed;
+    public void kick(int direction) {
+        velocity.x = direction;
         currentState = State.MOVING_SHELL;
     }
 
-    public State getCurrentState() {
-        return currentState;
-    }
-
-    public void killed() {
-        currentState = State.DEAD;
-        Filter filter = new Filter();
-        filter.maskBits = MarioBros.NOTHING_BIT;
-        for (Fixture fixture : b2Body.getFixtureList())
-            fixture.setFilterData(filter);
-        b2Body.applyLinearImpulse(new Vector2(0, 5f), b2Body.getWorldCenter(), true);
-    }
 }

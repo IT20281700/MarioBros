@@ -18,14 +18,14 @@ import com.chamodex.mariobros.Screens.PlayScreen;
 import com.chamodex.mariobros.Sprites.Mario;
 
 public abstract class InteractiveTileObject {
-    protected Fixture fixture;
     protected World world;
     protected TiledMap map;
-    protected TiledMapTile tile;
     protected Rectangle bounds;
     protected Body body;
     protected PlayScreen screen;
     protected MapObject object;
+
+    protected Fixture fixture;
 
     public InteractiveTileObject(PlayScreen screen, MapObject object) {
         this.object = object;

@@ -72,10 +72,6 @@ public class B2WorldCreator {
 
             // Create pipe bodies/fixtures
             if(type.equals("pipe")) {
-                BodyDef bdef = new BodyDef();
-                FixtureDef fdef = new FixtureDef();
-                PolygonShape shape = new PolygonShape();
-
                 bdef.type = BodyDef.BodyType.StaticBody;
                 bdef.position.set((rect.getX() + rect.getWidth() / 2) / MarioBros.PPM, (rect.getY() + rect.getHeight() / 2) / MarioBros.PPM);
 
@@ -88,10 +84,6 @@ public class B2WorldCreator {
             }
             // Create ground bodies/fixtures
             if(type.equals("ground")) {
-                BodyDef bdef = new BodyDef();
-                FixtureDef fdef = new FixtureDef();
-                PolygonShape shape = new PolygonShape();
-
                 bdef.type = BodyDef.BodyType.StaticBody;
                 bdef.position.set((rect.getX() + rect.getWidth() / 2) / MarioBros.PPM, (rect.getY() + rect.getHeight() / 2) / MarioBros.PPM);
 
@@ -126,7 +118,7 @@ public class B2WorldCreator {
         return goombas;
     }
 
-    public static void removeTurtle(Turtle turtle) {
+    public void removeTurtle(Turtle turtle) {
         turtles.removeValue(turtle, true);
     }
 
