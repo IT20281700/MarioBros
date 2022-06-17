@@ -11,6 +11,7 @@ import com.chamodex.mariobros.Scenes.Hud;
 import com.chamodex.mariobros.Screens.PlayScreen;
 import com.chamodex.mariobros.Sprites.Items.ItemDef;
 import com.chamodex.mariobros.Sprites.Items.Mushroom;
+import com.chamodex.mariobros.Sprites.Mario;
 import com.chamodex.mariobros.Sprites.TileObjects.InteractiveTileObject;
 
 public class Coin extends InteractiveTileObject {
@@ -25,7 +26,7 @@ public class Coin extends InteractiveTileObject {
     }
 
     @Override
-    public void onHeadHit() {
+    public void onHeadHit(Mario mario) {
         if (getCell().getTile().getId() == BLANK_COIN)
             MarioBros.manager.get(MarioBros.bumpSoundPath, Sound.class).play();
         else {
