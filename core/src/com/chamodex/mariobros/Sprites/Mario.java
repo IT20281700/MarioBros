@@ -174,6 +174,14 @@ public class Mario extends Sprite {
         MarioBros.manager.get(MarioBros.powerupPath, Sound.class).play();
     }
 
+    public boolean isDead() {
+        return marioIsDead;
+    }
+
+    public float getStateTimer() {
+        return stateTimer;
+    }
+
     public boolean isBig() {
         return marioIsBig;
     }
