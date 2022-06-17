@@ -29,7 +29,6 @@ import com.chamodex.mariobros.Tools.WorldContactListener;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class PlayScreen implements Screen {
-
     // Reference to Game, used to set Screens
     private final MarioBros game;
     private TextureAtlas atlas;
@@ -52,7 +51,7 @@ public class PlayScreen implements Screen {
     // Sprites
     private Mario player;
 
-    private Music music;
+    public static Music music;
 
     private Array<Item> items;
     private LinkedBlockingQueue<ItemDef> itemsToSpawn;
@@ -96,7 +95,7 @@ public class PlayScreen implements Screen {
         // Main Music Play
         music = MarioBros.manager.get(MarioBros.mainMusicPath, Music.class);
         music.setLooping(true);
-//        music.play();
+        music.play();
 
         items = new Array<Item>();
         itemsToSpawn = new LinkedBlockingQueue<ItemDef>();
@@ -128,12 +127,14 @@ public class PlayScreen implements Screen {
     private void handleInput(float dt) {
 
         // If user is holding down mouse move our camera through the game world
-        if(Gdx.input.isKeyJustPressed(Input.Keys.UP) || Gdx.input.isKeyJustPressed(Input.Keys.W))
-            player.b2Body.applyLinearImpulse(new Vector2(0, 4f), player.b2Body.getWorldCenter(), true);
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D) && player.b2Body.getLinearVelocity().x <= 2)
-            player.b2Body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2Body.getWorldCenter(), true);
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A) && player.b2Body.getLinearVelocity().x >= -2)
-            player.b2Body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2Body.getWorldCenter(), true);
+        if (player.currentState != Mario.State.DEAD) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.UP) || Gdx.input.isKeyJustPressed(Input.Keys.W))
+                player.b2Body.applyLinearImpulse(new Vector2(0, 4f), player.b2Body.getWorldCenter(), true);
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D) && player.b2Body.getLinearVelocity().x <= 2)
+                player.b2Body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2Body.getWorldCenter(), true);
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A) && player.b2Body.getLinearVelocity().x >= -2)
+                player.b2Body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2Body.getWorldCenter(), true);
+        }
     }
 
     public void update(float dt) {
@@ -160,7 +161,8 @@ public class PlayScreen implements Screen {
         hud.update(dt);
 
         // attach game cam to player.x coordinate
-        gamecam.position.x = player.b2Body.getPosition().x;
+        if (player.currentState != Mario.State.DEAD)
+            gamecam.position.x = player.b2Body.getPosition().x;
 
         // Update game cam to correct coordinate
         gamecam.update();

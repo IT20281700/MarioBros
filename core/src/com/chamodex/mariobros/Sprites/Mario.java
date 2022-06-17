@@ -11,6 +11,8 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
+import com.badlogic.gdx.physics.box2d.Filter;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
@@ -18,7 +20,7 @@ import com.chamodex.mariobros.MarioBros;
 import com.chamodex.mariobros.Screens.PlayScreen;
 
 public class Mario extends Sprite {
-    public enum State { FALLING, JUMPING, STANDING, RUNNING, GROWING }
+    public enum State { FALLING, JUMPING, STANDING, RUNNING, GROWING, DEAD }
     public State currentState;
     public State previousState;
 
@@ -28,6 +30,7 @@ public class Mario extends Sprite {
     private TextureRegion marioStand;
     private Animation marioRun;
     private TextureRegion marioJump;
+    private TextureRegion marioDead;
     private TextureRegion bigMarioStand;
     private TextureRegion bigMarioJump;
     private Animation bigMarioRun;
@@ -39,6 +42,7 @@ public class Mario extends Sprite {
     private boolean runGrowAnimation;
     private boolean timeToDefineBigMario;
     private boolean timeToReDefineMario;
+    private boolean marioIsDead;
 
     private Screen screen;
 
@@ -76,9 +80,12 @@ public class Mario extends Sprite {
         marioJump = new TextureRegion(screen.getAtlas().findRegion("little_mario"), 80, 0, 16, 16);
         bigMarioJump = new TextureRegion(screen.getAtlas().findRegion("big_mario"), 80, 0, 16, 32);
 
-        // stand
+        // standing
         marioStand = new TextureRegion(screen.getAtlas().findRegion("little_mario"), 0, 0, 16, 16);
         bigMarioStand = new TextureRegion(screen.getAtlas().findRegion("big_mario"), 0, 0, 16, 32);
+
+        // dead mario
+        marioDead = new TextureRegion(screen.getAtlas().findRegion("little_mario"), 96, 0, 16, 16);
 
         defineMario();
         setBounds(0, 0, 16 / MarioBros.PPM, 16 / MarioBros.PPM);
@@ -104,6 +111,9 @@ public class Mario extends Sprite {
         TextureRegion region;
 
         switch (currentState) {
+            case DEAD:
+                region = marioDead;
+                break;
             case GROWING:
                 region = (TextureRegion) growMario.getKeyFrame(stateTimer);
                 if(growMario.isAnimationFinished(stateTimer)) {
@@ -139,6 +149,8 @@ public class Mario extends Sprite {
     }
 
     private State getState() {
+        if (marioIsDead)
+            return State.DEAD;
         // Grow animation state
         if(runGrowAnimation) {
             return State.GROWING;
@@ -174,7 +186,14 @@ public class Mario extends Sprite {
             MarioBros.manager.get(MarioBros.powerdownPath, Sound.class).play();
         }
         else {
+            PlayScreen.music.stop();
             MarioBros.manager.get(MarioBros.marioDiePath, Sound.class).play();
+            marioIsDead = true;
+            Filter filter = new Filter();
+            filter.maskBits = MarioBros.NOTHING_BIT;
+            for (Fixture fixture : b2Body.getFixtureList())
+                fixture.setFilterData(filter);
+            b2Body.applyLinearImpulse(new Vector2(0, 4f), b2Body.getWorldCenter(), true);
         }
     }
 
