@@ -93,6 +93,14 @@ public class Goomba extends Enemy {
     }
 
     @Override
+    public void onEnemyHit(Enemy enemy) {
+        if (enemy instanceof Turtle && ((Turtle) enemy).currentState == Turtle.State.MOVING_SHELL)
+            setToDestroy = true;
+        else
+            reverseVelocity(true, false);
+    }
+
+    @Override
     public void hitOnHead(Mario mario) {
         setToDestroy = true;
         MarioBros.manager.get(MarioBros.stompPath, Sound.class).play();

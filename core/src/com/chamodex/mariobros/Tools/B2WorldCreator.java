@@ -20,7 +20,7 @@ import com.chamodex.mariobros.Sprites.Enemies.Goomba;
 
 public class B2WorldCreator {
     private Array<Goomba> goombas;
-    private Array<Turtle> turtles;
+    private static Array<Turtle> turtles;
 
     private final World world;
     private final TiledMap map;
@@ -124,6 +124,10 @@ public class B2WorldCreator {
 
     public Array<Goomba> getGoombas() {
         return goombas;
+    }
+
+    public static void removeTurtle(Turtle turtle) {
+        turtles.removeValue(turtle, true);
     }
 
     public Array<Enemy> getEnemies() {
