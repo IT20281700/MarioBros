@@ -10,9 +10,12 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
 import com.chamodex.mariobros.MarioBros;
 import com.chamodex.mariobros.Screens.PlayScreen;
+import com.chamodex.mariobros.Sprites.Mario;
 
 public class Turtle extends Enemy {
-    public enum State { WALKING, SHELL }
+    public static final int KICK_LEFT_SPEED = -2;
+    public static final int KICK_RIGHT_SPEED = 2;
+    public enum State { WALKING, STANDING_SHELL, MOVING_SHELL }
     public State currentState;
     public State previouseState;
     private float stateTime;
@@ -67,7 +70,7 @@ public class Turtle extends Enemy {
         head.set(vertice);
 
         fdef.shape = head;
-        fdef.restitution = 0.5f;
+        fdef.restitution = 1.5f;
         fdef.filter.categoryBits = MarioBros.ENEMY_HEAD_BIT;
         b2Body.createFixture(fdef).setUserData(this);
     }
@@ -76,7 +79,8 @@ public class Turtle extends Enemy {
         TextureRegion region;
 
         switch (currentState) {
-            case SHELL:
+            case STANDING_SHELL:
+            case MOVING_SHELL:
                 region = shell;
                 break;
             case WALKING:
@@ -102,7 +106,7 @@ public class Turtle extends Enemy {
     @Override
     public void update(float dt) {
         setRegion(getFrame(dt));
-        if(currentState == State.SHELL && stateTime > 5) {
+        if(currentState == State.STANDING_SHELL && stateTime > 5) {
             currentState = State.WALKING;
             velocity.x = 1;
         }
@@ -112,10 +116,21 @@ public class Turtle extends Enemy {
     }
 
     @Override
-    public void hitOnHead() {
-        if (currentState != State.SHELL) {
-            currentState = State.SHELL;
+    public void hitOnHead(Mario mario) {
+        if (currentState != State.STANDING_SHELL) {
+            currentState = State.STANDING_SHELL;
             velocity.x = 0;
+        } else {
+            kick(mario.getX() <= this.getX() ? KICK_RIGHT_SPEED : KICK_LEFT_SPEED);
         }
+    }
+
+    public void kick(int speed) {
+        velocity.x = speed;
+        currentState = State.MOVING_SHELL;
+    }
+
+    public State getCurrentState() {
+        return currentState;
     }
 }

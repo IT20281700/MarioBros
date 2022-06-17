@@ -18,6 +18,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.chamodex.mariobros.MarioBros;
 import com.chamodex.mariobros.Screens.PlayScreen;
+import com.chamodex.mariobros.Sprites.Enemies.Enemy;
+import com.chamodex.mariobros.Sprites.Enemies.Turtle;
 
 public class Mario extends Sprite {
     public enum State { FALLING, JUMPING, STANDING, RUNNING, GROWING, DEAD }
@@ -186,22 +188,26 @@ public class Mario extends Sprite {
         return marioIsBig;
     }
 
-    public void hit() {
-        if(marioIsBig) {
-            marioIsBig = false;
-            timeToReDefineMario = true;
-            setBounds(getX(), getY(), getWidth(), getHeight() / 2);
-            MarioBros.manager.get(MarioBros.powerdownPath, Sound.class).play();
-        }
-        else {
-            PlayScreen.music.stop();
-            MarioBros.manager.get(MarioBros.marioDiePath, Sound.class).play();
-            marioIsDead = true;
-            Filter filter = new Filter();
-            filter.maskBits = MarioBros.NOTHING_BIT;
-            for (Fixture fixture : b2Body.getFixtureList())
-                fixture.setFilterData(filter);
-            b2Body.applyLinearImpulse(new Vector2(0, 4f), b2Body.getWorldCenter(), true);
+    public void hit(Enemy enemy) {
+        if (enemy instanceof Turtle && ((Turtle) enemy).getCurrentState() == Turtle.State.STANDING_SHELL) {
+            ((Turtle) enemy).kick(this.getX() <= enemy.getX() ? Turtle.KICK_RIGHT_SPEED : Turtle.KICK_LEFT_SPEED);
+        } else {
+            if(marioIsBig) {
+                marioIsBig = false;
+                timeToReDefineMario = true;
+                setBounds(getX(), getY(), getWidth(), getHeight() / 2);
+                MarioBros.manager.get(MarioBros.powerdownPath, Sound.class).play();
+            }
+            else {
+                PlayScreen.music.stop();
+                MarioBros.manager.get(MarioBros.marioDiePath, Sound.class).play();
+                marioIsDead = true;
+                Filter filter = new Filter();
+                filter.maskBits = MarioBros.NOTHING_BIT;
+                for (Fixture fixture : b2Body.getFixtureList())
+                    fixture.setFilterData(filter);
+                b2Body.applyLinearImpulse(new Vector2(0, 4f), b2Body.getWorldCenter(), true);
+            }
         }
     }
 
